@@ -17,18 +17,44 @@ app.secret_key = "change this string"
 @app.route("/home")
 @app.route("/index")
 def homepage():
-    return(render_template("homepage.html"))
+    return render_template("homepage.html")
 
-@app.route("/register")
+@app.route("/register", methods=["GET"])
 def register_page():
-    return (render_template("register.html"))
+    return render_template("register.html")
 
-@app.route("/login")
+@app.route("/register", methods=["POST"])
+def register_action():
+
+    # create local instance of the form's response
+    form = dict(request.form)
+
+    # stop repeat usernames
+    if userdb.find_one({"username": form["username"]}):
+        return "username already in db"
+
+    # if the data is valid, insert it
+    userdb.insert_one({"username": form["username"], "password": form["password"]})
+
+    # redirect to the login page
+    return redirect(url_for('login_page'))
+
+@app.route("/login", methods=["GET"])
 def login_page():
-    return (render_template("login.html"))
+    return(render_template("login.html"))
 
+@app.route("/login", methods=["POST"])
+def login_action():
+    form = dict(request.form)
+
+    # stop repeat usernames
+    if userdb.find_one({"username": form["username"], "password": form["password"]}):
+        return "login successful"
+
+    return redirect(url_for('login_page'))
 
 if(__name__=="__main__"):
+    userdb.remove()
     app.run(debug=True)
     '''
     print(userdb.insert_one({"potato": 1}))
