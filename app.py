@@ -41,16 +41,19 @@ def register_action():
 
 @app.route("/login", methods=["GET"])
 def login_page():
-    return(render_template("login.html"))
+    return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
 def login_action():
+
+    # create local instance of the form's response
     form = dict(request.form)
 
-    # stop repeat usernames
+    # conduct login if credentials are correct
     if userdb.find_one({"username": form["username"], "password": form["password"]}):
         return "login successful"
 
+    # otherwise redirect to the login page
     return redirect(url_for('login_page'))
 
 if(__name__=="__main__"):
