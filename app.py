@@ -17,10 +17,23 @@ app.secret_key = "change this string"
 @app.route("/home")
 @app.route("/index")
 def homepage():
-    return("")
+    return(render_template("homepage.html"))
 
+@app.route("/register")
+def register_page():
+    return (render_template("register.html"))
 
+@app.route("/login")
+def login_page():
+    return (render_template("login.html"))
 
 
 if(__name__=="__main__"):
     app.run(debug=True)
+    '''
+    print(userdb.insert_one({"potato": 1}))
+    print(userdb.find_one({"potato":1}))
+    print(list(userdb.find()))
+    userdb.remove()
+    print(userdb.find_one({"potato":1}))
+    '''
